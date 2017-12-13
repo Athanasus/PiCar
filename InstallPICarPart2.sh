@@ -14,3 +14,6 @@ sudo systemctl restart smbd.service
 sudo git clone https://github.com/Athanasus/automount-usb.git
 cd /automount-usb/
 sudo ./CONFIGURE.sh
+#Support for NTFS and exfat drives
+sudo apt-get -y install ntfs-3g
+sudo apt-get install exfat-fuse exfat-utils
