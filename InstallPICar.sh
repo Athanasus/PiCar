@@ -2,7 +2,7 @@
 #Don't forget to : chmod +x InstallPICar.sh
 # and run !
 sudo apt-get -y update
-sudo apt-get -y install
+sudo apt-get -y upgrade
 #https://frillip.com/using-your-raspberry-pi-3-as-a-wifi-access-point-with-hostapd/
 #http://www.dericbourg.net/2015/07/04/utiliser-un-raspberry-pi-comme-point-dacces-wifi/
 #https://www.raspberrypi.org/forums/viewtopic.php?f=66&t=145942
@@ -22,7 +22,6 @@ sudo iptables -t nat -A POSTROUTING -o wlan1 -j MASQUERADE
 sudo iptables -A FORWARD -i wlan1 -o wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT
 sudo iptables -A FORWARD -i wlan0 -o wlan1 -j ACCEPT
 sudo sh -c "iptables-save > /etc/iptables.ipv4.nat"
-#!! revoir ligne suivante : ajout de ^
 sudo sed -i -e 's/^exit 0/iptables-restore < \/etc\/iptables.ipv4.nat\nexit 0/g' /etc/rc.local
 sudo service hostapd start
 sudo service dnsmasq start
@@ -31,55 +30,7 @@ sudo service dnsmasq start
 sudo bash -c "printf 'r8712u\nbrcmfmac\nbrcmutil'>>/etc/modules"
 sudo touch /etc/udev/rules.d/76-netnames.rules
 sudo bash -c "printf '# identify device by MAC address\nSUBSYSTEM==\"net\", ACTION==\"add\", ATTR{address}==\"b8:27:eb:64:6e:38\", NAME=\"wlan0\"\nSUBSYSTEM==\"net\", ACTION==\"add\", ATTR{address}==\"d8:eb:97:28:64:d4\", NAME=\"wlan1\"\n'>>/etc/udev/rules.d/76-netnames.rules"
-#
-#Install Samba
-#
-sudo apt-get -y install libcups2 samba samba-common cups
-sudo mv /etc/samba/smb.conf /etc/samba/smb.conf.bak
-sudo touch /etc/samba/smb.conf
-sudo bash -c "printf '[global]\nworkgroup = WORKGROUP\nserver string = Samba Server %%v\nnetbios name = debian\nsecurity = user\nmap to guest = bad user\ndns proxy = no\n\n[USB]\n   path = /media/pi/USB/\n   force group = users\n   create mask = 0660\n   directory mask = 0771\n   browsable =yes\n   writable = yes\n   guest ok = yes\n\n'>/etc/samba/smb.conf"
-sudo systemctl restart smbd.service
+#END OF PART 1, REBOOTING...
+sudo reboot
 
 
-
-
-
-
-
-
-
-
-
-#Search stuff...
-#
-#sudo touch /etc/network/interfaces.d/wlan1
-#sudo bash -c "printf 'allow-hotplug wlan1\niface wlan1 inet manual\n    wpa-conf /etc/wpa_supplicant/wpa_supplicant.conf\n'>>/etc/network/interfaces.d/wlan1"
-#sudo systemctl enable wpa_supplicant.service
-
-##https://www.raspberrypi.org/forums/viewtopic.php?p=459803#p459824
-#sudo touch /lib/udev/rules.d/75-persistent-net-generator.rules
-#sudo bash -c "printf '# device name whitelist\nKERNEL!=\"eth*|ath*|wlan*[0-9]|msh*|ra*|sta*|ctc*|lcs*|hsi*\", \\ \n                                        GOTO=\"persistent_net_generator_end\"\n'>/lib/udev/rules.d/75-persistent-net-generator.rules"
-##Reboot without usb dongle
-##Connect usb donge
-##Reboot
-
-#https://lb.raspberrypi.org/forums/viewtopic.php?f=36&t=191453&start=25#p1208140
-#I found the answer. That is why the funny interface names. I removed
-#net.ifnames=0
-#from /boot/cmdline.txt, and now all works with both wifi devices,
-
-#The onboard wifi shows as wlan0, and the usb wifi device shows as wlx00026f439211.
-
-#https://www.raspberrypi.org/forums/viewtopic.php?t=191061#p1199672
-#sudo cp /etc/wpa_supplicant/wpa_supplicant.conf /etc/wpa_supplicant/wpa_supplicant-wlan1.conf
-#sudo systemctl disable wpa_supplicant.service
-#sudo systemctl enable wpa_supplicant@wlan1.service
-
-
-#Inutile :
-#sudo bash -c "printf 'allow-hotplug wlan1\niface wlan1 inet manual\nwpa-roam /etc/wpa_supplicant/wpa_supplicant.conf\niface default inet dhcp\n'>/etc/network/interfaces.d/wlan1"
-#sudo systemctl enable wpa_supplicant.service
-
-
-#sudo apt-get -y install iptables-persistent
-#sudo /etc/init.d/iptables-persistent save
