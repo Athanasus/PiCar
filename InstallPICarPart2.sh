@@ -12,4 +12,5 @@ sudo bash -c "printf '[global]\n   workgroup = WORKGROUP\n   dns proxy = no\n   
 sudo systemctl restart smbd.service
 #Install automount & share USB from github https://github.com/Athanasus/automount-usb.git
 sudo git clone https://github.com/Athanasus/automount-usb.git
-sudo ./automount-usb/CONFIGURE.sh
+cd /automount-usb/
+sudo ./CONFIGURE.sh
