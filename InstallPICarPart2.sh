@@ -12,4 +12,4 @@ sudo bash -c "printf '[global]\n   workgroup = WORKGROUP\n   dns proxy = no\n   
 sudo systemctl restart smbd.service
 #Install automount & share USB from github https://github.com/Athanasus/automount-usb.git
 sudo git clone https://github.com/Athanasus/automount-usb.git
-sudo /bin/bash /home/pi/automount-usb/CONFIGURE.sh
+sudo /bin/bash /home/pi/PiCar/automount-usb/CONFIGURE.sh
